@@ -1,0 +1,53 @@
+Jenkins - CI tool and automation server.
+
+#Plugins# :- # git ,html publisher , pipeline steps , copy artefact.
+
+Jenkinsfile : The text file where all the definitions of pipelines are defined is called Jenkinsfile. It is being checked in the source control repository.
+
+Pipeline : Basically, a pipeline is a group of build jobs that are chained and integrated in sequence.
+
+#Scripted# : In the above syntax, the node is a part of the Jenkins distributed mode architecture, where there are two types of node, Master which handle all the tasks in the development environment and the Agent is being used to handle multiple tasks individually.
+
+Node {
+           }
+
+#Declarative Pipelines# : Declarative Pipelines are the newest additions to Jenkins that simplify the groovy syntax of Jenkins pipelines (top-level pipeline) with some exceptions, such as:
+
+Syntax : pipeline {
+                agent any
+                stages {
+stage(‘Build’) {
+                steps {
+// Statements…
+                }
+                }
+       stage (‘Test’) {
+       steps {
+              // Statements…
+       }
+       }
+    }
+}
+
+Pipeline: The block of script contents.
+Agent: Defines where the pipeline will start running from.
+Stage: The pipelines contain several steps enclosed in the block called Stage.
+
+
+ What commands can be used to start Jenkins manually?
+(Jenkins_url)/restart: To force restart without waiting for build completion.
+(Jenkin_url)/safeRestart: Waits until all the build gets completed before restarting.
+
+
+ How can you secure Jenkins?
+ - Access Control : 
+		Security Realm : determines a user or a group of users with their passwords.
+		Authorization Strategy :
+ - Protecting Jenkins users from outside threats.
+
+ How to create a backup and copy files in Jenkins?
+ - In Jenkins, all the settings, build logs and configurations are stored in the JENKINS_HOME directory. Whenever you want to create a backup of your Jenkins you can back up JENKINS_HOME directory frequently.
+ 
+Use of Backup Plugin in Jenkins?
+  -ThinBackup plugin name
+

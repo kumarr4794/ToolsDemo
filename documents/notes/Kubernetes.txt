@@ -1,0 +1,364 @@
+
+Problem : 
+
+With Rise of Microservices : Small individual container/application in container. Managing these containers are tiresome so we need a orchestration tool , hence Kubernetes.
+
+
+Kubernetes : Opensource container orchestration tool , Manages docker conatiners.
+Features : High availability 
+	   Scalability.
+	   Disaster recovery.
+
+
+Kubernetes Components : 
+
+- Pod : [abstraction of containers]
+	Smallest unit of K8s, and its an abstraction over container.
+	- We only interact with K8s layer (abstraction).
+	- Usually 1 app per pod.
+	- Each pod gets 1 IP address , using that it communicates with other pods.
+	- Ephemeral , If new pod comes up new IP is assigned.
+	- Pods communicate with each other using service.
+	 
+- Node/ Worker node : Virtual machine
+
+- Service : *[Communication]* 
+To overcome Ephemeral , Service are permanent IP's , and pods communicate 		   via service. Lifecycle of pod and service is not connected. It'll have DNS name and load balancer. it forwards req to pods
+
+- Ingress :[route traffic into cluster]
+When you want to expose or access service from outside, Ingress forward req from outside to service.
+	
+- ConfigMap : [ext configs] 
+To store external configuration like db url, we use configMap. It'll saved plaintext
+
+- Secrets : [ext configs]
+When you want to save creds/certs use secrets, it'll base64 encoded and saved. Environment variable we can use secrets, configMap details inside containers or have as config file.
+
+- Volumes : [Data persistance] 
+Attaches physical storage to pod so we don't loose the data, storage can be on same machine or remote storage. K8s doesn't manages data persistence	, So we've to enable/configure this functionality.
+
+When pod dies/restart it'll have some downtime,So we've to replicate the node and service acts as load balancer where it forwards req to least traffic pods.   
+ We have create blueprints for these node /replica creations so that's where deployment comes.
+
+- Deployment : [pod blueprints]
+- We don't create pods , we create deployments and define replicas scale up and scale down of pods in that. Deployments are stateless apps/dbs.
+- We can't replicate Database using deployments, because its stateful means uses same datastore,
+
+- StatefulSet - Meant for databases ,statefulset are for stateful apps/db. Statefulset is difficult. 
+
+
+
+K8s Architecture : 
+ 
+- Nodes : Each Node has multiple Pods on it. Worker Nodes do the actual work.
+ 3 Process must be installed on every node.
+ - Container runtime - ex. Docker.
+ - Kubelet : process of K8s, It interacts with both container and node. It starts the pod with a container inside, cpu
+ - Kube Proxy - Intelligent forwarding requests from service to pods, 
+
+How do we interact with cluster? = Master Node/service
+
+- Master : 4 processes on every master.
+
+
+ - API SERVER : a new app into cluster we common with apiserver from some client [kubectl] , cluster gateway , acts as auth agent. 
+Req - > API server -> validates req -> other processes -> pods/etc.
+Its the only one entry point to cluster. 
+
+- Scheduler : schedules new pod 
+
+Process = req->API server -> validates req -> schedluer [analyse our requirements]-> Kubelets -> pods/etc.
+
+- Controller Manager -  responsible for state changes , if pods dies it detects and recovers pods
+
+ Process =Calls scheduler -> scheduler -> kublet -> pods
+
+- ETCD = Brain of master cluster , Its a key valuestore, Stores details about worker nodes, pods which is helpful for commN b/w master and node vice versa
+
+We will have multiple Masters, API Server will be loadbalanced.
+ 
+
+
+
+What is Minikube and kubectl? 
+
+- MiniKube : 1 node cluster, Master and node will be on same cluster. Runs by Virtualbox on laptop.
+ Installation : brew install hyperkit
+		brew install minikube
+
+- Kubectl : To communicate above cluster we need UI/API/CLI or kubectl.
+
+ Basic commands : 
+
+GET COMMANDS : 
+- Get nodes : kubectl get nodes , return list of nodes.
+- get pod.  : kubectl get pod , kubectl get pod -o wide
+- get service: kubectl get services
+- get deployment : kubectl get deployment
+- get replicates : kubectl get replicaset
+
+CREATE COMMANDS : Creating pod [We can't directly create pod , instead use deployment for creating pods]
+
+- CREATE DEPLOYMENT - `kubectl create deployment nginx-dep --image=ngnix`
+
+EDIT COMMANDS : 
+
+- Edit Deployment : kubectl edit deployment <Deployment-NAME>
+
+ 
+Help - kubectl create --help / 
+ 
+
+Debugging Commands:
+
+Logs :  `kubectl logs 'POD-NAME'` 
+
+Describe : `kubectl describe pod <pod-name>` gives some description and actions.
+
+Exec : `kubectl exec -it pod <pod-name> --bin/bash`
+
+
+DELETE : 
+
+- delete deployment : kubectl delete deployment	<NAME> , which will deletes all pods, replica associated with that deployment.
+
+Apply - when running deployment using config-file.yaml 
+	`kubectl apply -f nginx-deploy.yaml`
+ 
+
+
+#YAML configuration File in Kubernetes: 
+
+There are actually 3 parts of configuration file. 
+
+1. Metadata : 
+2. Spec :
+3. Status : automatically generated and kept. Kind of tfstate in terraform. [Basis of self healing]
+
+ETCD : holds current cluster information which is helpful
+
+First 2 files tells what we are creating 
+
+Deployment : 
+	`apiVersion: apps/v1
+	 kind: Deployment`
+	 metadata:
+	 spec:
+		 
+
+Service : 
+	 `apiVersion: v1 
+	  kind: Service
+	  metadata:
+	  spec:`
+
+
+Connecting Components : 
+  
+Labels and Selectors & Ports.
+
+Metadata part contains labels ,
+Spec parts contains selectors
+
+# Connecting deployment to pods : Using any key:value pair of components.
+
+Labels:
+ app:nginx -> key and value pair
+
+Pods get the label through the templated blueprint, This label is matched by the selector.
+
+Selector:
+   matchLabels:
+   app: nginx
+
+	
+
+# connecting service to deployments
+ 
+Labels label ,app:nginx in deployment is used by the selector in service , app:name 
+
+
+Another thing to configure is ports.
+
+Ports in service and pod, 
+
+Example : DB Service > 80 > [nginx service] 8080 > Pod
+
+Ports:
+  - protocol: TCP
+    Port: 80
+    targetPort: 8080 -> target here is pod port	, In deployment we can see this port mapping under container/pod Specs.
+
+Use kubectl describe to get whole config.
+
+
+SECRETS as Environment variables: 
+ 
+ env:
+ - name:MONGO_DB_USERNAME
+   Value:
+ - name:MONGO_DB_PASSWORD
+   Value:
+
+# Create {Service-Name}-secret.yaml to include above username and password.
+
+ kind: Secret
+ Metadata: mongodb-secret
+ Type: Opaque
+ data:
+	mongo-db-username: 
+	mongo-db-password: 
+
+To convert into BASE64 > echo -n 'username' | base64
+
+FYI : we must create secret if it's been referenced in deployment or else it'll fail for not finding creds while creating pods.
+
+
+To refer this secret vars in deployment have something as below.
+
+`env:
+ - name: MONGO_DB_USERNAME
+   valueFrom:
+   secretKeyRef:
+	name: mongoldb-secret
+	key: mongo-db-username 
+
+add corresponding keyName from secret here.
+
+#Internal service to make other pods to talking. Hint : [Kind of Internal loadbalancer in aws]
+
+
+**ConfigMap** : example common config parameters like DB_URL & which can be stored plaintext
+
+
+kind: ConfigMap
+Metadata: random name
+data: 
+
+Refer this in deployment as ConfigMapRef: and key name as in ConfigMap.yaml
+
+
+To Access this from outside create on Ingress.yaml
+
+
+To make it external service 
+   Under service.yaml , add type: LoadBalancer and under ports add nodePort: 30-32k 
+
+In get service. 
+  For internal service ClusterIP / internal IP of service.
+  External will have both internal and external service.
+
+ In Minikube ext-IP be pending , but in actual cluster will have ext-IP
+
+To enable in minikube : minikube service mongo-express-service
+
+ Browser -> mongo-exp-ext-serv -> mongo-eep-pod -> mongoldb-int-serv -> mongodb-pod
+
+
+
+Namespaces : What is Namespace? 
+
+Organise resources in namespaces, N number of NS , NS are like virtual cluster inside the Kubernetes cluster , if we create cluster we get by defaultly namespace assigned
+ 
+ 4 NS per Default:
+
+1. Kube-dashboard: Its specific to minikube
+2. Kube-service: Not meant for our use , these are system processes [master/kubectl]
+3. Kube-public: config-map of cluster info,public accessible data 
+4. Kube-node-lease: newly added, holds info of node [heart beat]
+5. Default: here we can create new namespaces.	
+
+2 ways NS can be created:
+
+ - Kubectl create namespace <Name>.   <OR>
+ - Create from config.yaml file for Namespace.
+	namespace: 
+
+	
+Why we need?
+
+USE CASE : Imagine we have default NS and we created all resources in single NS , IF big apps is deployed it'll be really difficult to have overview of t
+
+So we can group resource and create NS : [logically grouping]
+ Like database NS , Monitoring NS , 
+
+USE CASE : Imagine 2 teams using same clusters. If same deployment name chances of overwriting one another's deployment. 
+
+USE CASE : Blue / Green deployments , we can have 2 Namespace with current and upcoming prod version.
+
+
+Access and resource limits on NS : 
+Provide access /restrict at NS levels. 
+
+
+Each NS should have separate ConfigMap, we can't share it. But we can access service from other namespaces.
+
+Volumes are globally and not bound to NS ,
+
+Change active namespace : use kubens , no out of box solution from kubernetes.
+
+
+
+
+Kubernetes Questions : 
+
+Deployment 
+configMap
+serviceAccount
+Ingress
+
+
+1. ServiceAccount : A User is accessing, 2 things to authenticate users and Authorisation.  Giving Authorisation to other service.
+
+2. After Deployment how will you access? 
+ 	- NodePort service or ingress
+
+3. Use of cluster IP ? 
+   When app needs to accessed within cluster then use clusterIP
+
+4. Copying into cluster
+
+ 	- Use ConfigMap , Helm
+
+5. Different b/w secret and configMaps
+ 	Secrets - Base64 enc.
+ 	ConfigMap - PlainText
+
+6. Static pod
+
+7. DeamonSets :  Monitoring scenario , fluentD one pod for each node.
+
+8. High Availability : Probes liveness and readiness .Liveness needs 30s and 
+
+9. How deploy on master, We can run on pods on master too due to taint we can deploy on master but when we apply toleration we can deploy on master too
+
+
+10. Specifying node : using nodeselector to deploy on specific node,
+
+11. Upgrading kubernetes version : k8s supports only 3 version back of latest ver.
+
+ Take of pods on the node 1 to diff nodes.
+
+12 no. of namespaces 4,
+
+13. Use of calico , networking solutions. 
+   
+  4 nodes , To resolve the IP conflicts of Pod.
+
+14. Resolve volumeset 
+
+15 . RBAC - Role based Acess control
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
