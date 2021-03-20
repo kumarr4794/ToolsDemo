@@ -1,3 +1,5 @@
+https://www.katacoda.com/
+https://kubernetes.io/docs/tutorials/kubernetes-basics/create-cluster/cluster-intro/
 
 Problem : 
 
