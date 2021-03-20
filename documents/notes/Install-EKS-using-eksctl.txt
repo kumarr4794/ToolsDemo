@@ -1,0 +1,53 @@
+#Guide to Install EKS on AWS using eksctl CLI tool.
+
+AWS Guide : https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
+Weaveworks : https://eksctl.io/
+NIRMATA : https://nirmata.com/
+
+Install Weaveworks tap : brew tap weaveworks/tap
+Intall eksctl : brew tap weaveworks/tap/eksctl
+
+NOTE : AWS IAM authentication is required with correct credentials.
+
+To Create a EKS cluster :  eksctl create cluster \
+                    --name test-cluster
+                    --version 1.17 \
+                    --region us-west-2 \
+                    --nodegroup-name linux-nodes \
+                    --node-type t2-micro \
+                    --nodes 2
+
+Options Explained :  --name cluster-name
+                     --version kubernetes-version
+                     --region eks-cluster-region
+                     --nodegroup-name workernodegroup name
+                     --node-type ec2 instance type
+                     --nodes number of nodes/ec2
+
+Kubeconfig path on mac :  /users/username/.kube/config
+Contains endpoint , cert etc details..
+
+To Delete eks cluster : eksctl delete cluster \
+                        ----name cluster-name
+
+Customize your cluster by using a config file. Just run below command
+
+ > eksctl create cluster -f cluster.yaml
+
+cluster.yaml contents
+
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: basic-cluster
+  region: eu-north-1
+
+nodeGroups:
+  - name: ng-1
+    instanceType: m5.large
+    desiredCapacity: 10
+  - name: ng-2
+    instanceType: m5.xlarge
+    desiredCapacity: 2
+
