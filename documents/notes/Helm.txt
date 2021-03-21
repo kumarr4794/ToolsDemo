@@ -1,0 +1,57 @@
+:: HELM PACKAGE MANAGER ::
+
+Docs : https://helm.sh/
+       https://helm.sh/docs/intro/
+
+
+
+######## HELM Architecture ######
+
+o HELM CLIENT o :
+    - Interacts with Tiller server
+    - Manages charts
+    - creates new charts
+    - Packages charts into archive.
+    - Installs & Uninstalls Charts.
+    - Manages chart release cycle.
+
+
+o TILLER SERVER o :
+    - Interacts with Kubernetes API
+    - Manages releases.
+    - Listens for requests from helm chart.
+    - Combines a chart and a config into a release.
+    - Instals charts and tracks the release.
+    - Upgrades and uninstalls charts.
+
+
+- What is package manager? / dependency management.
+
+Example , RHEL has yum , OSX - brew which creates graph of dependency packages needed to install your one package and installs them on your machine.
+
+We need to know	what repos we are using to pull the packages,
+
+Package management in K8s :
+
+Commands :
+
+List charts : > helm ls / list
+
+Search chart : helm search <chart-name> , use stable/<chart-name> or --version to install specific version
+
+Install : helm install stable/wordpress , options --version to specific release.
+
+Fetch : helm fetch stable/wordpress , Just pull the charts and keep it as local copy doesn't installs.Pass --untar to unzip the chart.tar
+
+Delete : helm delete <release-name>
+
+To Upgrade : helm upgrade <release-name> stable/
+
+Dependency check : helm dep list
+
+Dependency update : helm dep update, it first checks localhost if not found makes api call and pulls tar.
+
+
+To find tiller server : kubectl get pods --all-namespaces | grep tiller
+
+> helm home : gives helm installation dir.
