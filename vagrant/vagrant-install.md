@@ -45,3 +45,5 @@ To ssh into the VMs, you need to use the names web and db.
 vagrant ssh web
 vagrant ssh db
 ```
+
+Refer Guide : https://medium.com/@jayprakash.bilgaye/vagrant-step-by-step-tutorials-b0292412a171
