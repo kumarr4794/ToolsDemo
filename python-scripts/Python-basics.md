@@ -35,3 +35,23 @@ Indentation is required for functions. We have to invoke/call the function in or
 
 # Passing Parameters to functions.
 
+days_to_units(35.4)
+
+# Variable scopes 
+
+- global = A Variable is global if defined outside the function.
+- local  = A Variables is local if defined inside the function.
+
+
+# User Input program
+input()
+# return values from function
+ use return in func , keyword to return something from function
+# type() - returns datatype of variable.
+
+
+# Conditionals , if/else
+Example using Validation of user Input.
+
+"=" - assign values, 
+"==" - condition check.
