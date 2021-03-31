@@ -55,3 +55,17 @@ Example using Validation of user Input.
 
 "=" - assign values, 
 "==" - condition check.
+
+# Try Catch 
+  try: 
+    if:
+    elseif:
+  except ValueError:
+
+
+# While loops
+ Runs until the statement/condition is true, if false exits the loop.
+
+
+# Lists and For Loops 
+    
