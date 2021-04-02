@@ -68,4 +68,18 @@ Example using Validation of user Input.
 
 
 # Lists and For Loops 
-    
+
+    List operations : 
+    CREATE : mylist = ["1", "2", "3"] -> index same as array 0,1,2
+    REMOVE: mylist[0]
+    ADD : mylist.append("4")
+
+    -----------------------------
+    Listname = ["1", "2", "3"]
+    For = for <listElement> in <Listname>:
+        Some condition here
+
+ convert elements into list -> split() returns a list of values.
+   USUAGE: var.split(",")
+
+# Comments 
