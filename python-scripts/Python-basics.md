@@ -83,3 +83,11 @@ Example using Validation of user Input.
    USUAGE: var.split(",")
 
 # Comments 
+
+ # - single line
+ ''' some text  // multi line 
+     here too
+ ''' = 
+
+ # Sets
+  Set cannot have duplicate values,  
