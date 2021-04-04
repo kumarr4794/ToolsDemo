@@ -5,6 +5,7 @@ metadata:
   labels:
     component: web
 spec:
+  replicas: 2
   containers:
   - name: client
     image: stephengrider/multi-client

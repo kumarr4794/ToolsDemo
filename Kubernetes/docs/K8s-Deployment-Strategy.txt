@@ -1,0 +1,3 @@
+Good Reads : 
+
+    - https://www.educative.io/blog/kubernetes-deployments-strategies
