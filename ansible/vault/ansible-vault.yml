@@ -1,0 +1,9 @@
+---
+- name: Ansible playbook to git clone utilise ansible-vault.
+  hosts: all 
+  become: true 
+  tasks: 
+  - name: Clone a Repo
+    git:
+      repo: 
+      dest: 
