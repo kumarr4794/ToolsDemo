@@ -14,3 +14,11 @@ Operator link : https://github.com/prometheus-community/helm-charts/tree/main/ch
 
 # Install prometheus fixed version : 
 `helm install prometheus prometheus-community/kube-prometheus-stack --version "9.4.1"`
+
+# Uninstall chart 
+`helm uninstall prometheus prometheus-community/kube-prometheus-stack`
+
+# upgrade 
+ `helm upgrade chartname`
+# Rollback
+`helm rollback chartname`
