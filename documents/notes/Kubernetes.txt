@@ -352,8 +352,13 @@ Ingress
 15 . RBAC - Role based Acess control
 
 
+# Deployments [Upgrade/Rollback]
 
-
+- create: kubectl create -f filename
+- Update: kubectl create -f filename / kubectl set image deployment/appName nginx=nginx1.3
+_ STATUS: kubectl rollout status deployment/appName
+			kubectl rollout history deployment/appName
+- Rollback: kubectl rollout undo deployment/appName
 
 
 
