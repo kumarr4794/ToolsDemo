@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 
 deployment:
-  replicaCount: 1
-  name: my-deployment
+  replicaCount: 2
+  name: second-service
   image:
     repository: nginx
     pullPolicy: IfNotPresent
@@ -13,11 +13,8 @@ deployment:
   # Overrides the image tag whose default is the chart appVersion.
 
 service:
-  name: my-service
+  name: second-service
   type: NodePort
   port: 80
   targetPort: 80
-  NodePort: 32036
-
-container:
-  enabled: true
+  NodePort: 32046

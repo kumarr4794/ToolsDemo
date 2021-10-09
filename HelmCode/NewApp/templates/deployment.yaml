@@ -21,3 +21,6 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+        {{- if eq .Values.container.enabled true -}}
+        {{- include "container" . | nindent 8 -}}
+        {{- end -}}
