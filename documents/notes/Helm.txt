@@ -35,6 +35,8 @@ Package management in K8s :
 
 Commands :
 
+Create chart : helm create <ChartName>
+
 List charts : > helm ls / list
 
 Search chart : helm search <chart-name> , use stable/<chart-name> or --version to install specific version
@@ -43,7 +45,7 @@ Install : helm install stable/wordpress , options --version to specific release.
 
 Fetch : helm fetch stable/wordpress , Just pull the charts and keep it as local copy doesn't installs.Pass --untar to unzip the chart.tar
 
-Delete : helm delete <release-name>
+Delete : helm delete <release-name> / helm unistall releaseName
 
 To Upgrade : helm upgrade <release-name> stable/
 
@@ -55,3 +57,8 @@ Dependency update : helm dep update, it first checks localhost if not found make
 To find tiller server : kubectl get pods --all-namespaces | grep tiller
 
 > helm home : gives helm installation dir.
+
+
+% Debugging Helm %:
+ - helm lint OR helm template . | kubectl apply -f - [Gives YAmls to debug and find errors.]
+
