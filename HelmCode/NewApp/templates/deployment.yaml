@@ -22,5 +22,7 @@ spec:
               containerPort: 80
               protocol: TCP
         {{- if eq .Values.container.enabled true -}}
-        {{- include "container" . | nindent 8 -}}
+        {{- include "container1" . | nindent 8 -}}
+        {{- else -}}
+        {{- include "container2" . | nindent 8 -}}
         {{- end -}}

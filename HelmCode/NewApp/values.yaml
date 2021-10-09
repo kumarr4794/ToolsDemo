@@ -20,4 +20,4 @@ service:
   NodePort: 32036
 
 container:
-  enabled: true
+  enabled: false
